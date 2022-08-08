@@ -1,0 +1,8 @@
+# pipインストール
+pip install requests
+
+# リクエスト先URL
+url = 'http://fluentd:9999/sample.data'
+
+# 実行
+python /python/src/post.py

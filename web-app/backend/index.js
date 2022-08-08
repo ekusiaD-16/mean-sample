@@ -4,6 +4,23 @@ const config = require('./config')  // indexは省略可
 const productRoutes = require('./routes/products')
 const path = require('path')
 
+// fuluentdへの通信
+console.log('POST to fluentd')
+var request = require('request');
+var options = {
+  uri: "http://fluentd:9999/sample.data",
+  headers: {
+    "Content-type": "application/json",
+  },
+  json: {
+    "key1": "param1",
+    "key2": "param2"
+  }
+};
+request.post(options, function(error, response, body){
+  console.log(`POST response:${response.statusCode}`);
+});
+
 console.log(config.DB_URI)
 mongoose.connect(config.DB_URI, {
   useNewUrlParser: true,

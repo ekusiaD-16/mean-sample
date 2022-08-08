@@ -1,0 +1,37 @@
+# コンテナへログイン
+docker exec -it kafka_c bash
+
+# wget をインストール(wgetのコマンドがないといわれたので)
+yum -y update
+yum install -y wget
+
+# kafka をダウンロード(コンテナマウントしてもよいかも)
+wget -O /tmp/kafka_2.11-1.0.0.tgz https://archive.apache.org/dist/kafka/1.0.0/kafka_2.11-1.0.0.tgz
+tar -xzf /tmp/kafka_2.11-1.0.0.tgz -C /opt
+mv /opt/kafka_2.11-1.0.0/ /opt/kafka
+
+# java jdk をインストール(下記zookeeper起動の時にjava not found とかのエラーが出たのでいれた)
+yum -y update
+yum install -y java-1.8.0-openjdk
+
+# zookeeper起動
+nohup /opt/kafka/bin/zookeeper-server-start.sh /opt/kafka/config/zookeeper.properties &
+# kafka起動
+nohup /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/server.properties &
+# トピック作成(topic=topic-sample コンテナ起動後一度きりでよい)
+/opt/kafka/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic topic-sample
+
+# console-consumerを実行
+/opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic topic-sample --from-beginning
+
+
+# kafka_cli
+# コンテナへログイン
+docker exec -it kafka_cli_c bash
+
+# pip をインストール(pipコマンドがないといわれたので)
+curl "https://bootstrap.pypa.io/pip/2.7/get-pip.py" -o "get-pip.py"
+python get-pip.py
+
+# python-consumerを実行
+python consumer.py

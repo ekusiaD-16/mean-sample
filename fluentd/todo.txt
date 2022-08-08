@@ -1,0 +1,19 @@
+# コンテナへログイン
+docker exec -it fluentd_c bash
+
+# fluentd(td-agent)インストールファイルを実行(下記の# 注意)
+bash etc/td-agent/install-redhat-td-agent3.sh
+
+# td-agentを起動
+etc/init.d/td-agent start
+
+# td-agentを起動確認
+etc/init.d/td-agent status
+# 以下で起動OK
+> td-agent is running                                        [  OK  ]
+
+# 注意
+etc/td-agent/install-redhat-td-agent3.sh はダウンロードしたものを一部修正して
+コンテナにマウントしている
+修正箇所
+・line-8,line-11 sudoコマンドを除去 (sudoコマンドがないとエラーが出たのでsudoを使わないようにした)
